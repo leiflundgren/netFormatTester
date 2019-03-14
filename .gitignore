@@ -1,0 +1,17 @@
+﻿
+# Ignore all VisualStudio output
+# https://stackoverflow.com/a/35175552/25961
+*/**/bin/Debug
+*/**/bin/Release
+*/**/obj/Debug
+*/**/obj/Release
+*/**/obj/x86
+*/**/obj/x64
+*/**/bin/x86
+*/**/bin/x64
+*/**/obj
+*/**/.vs
+*/**/*.v12.suo
+*.pdf
+*/**/packages
+*.suo
