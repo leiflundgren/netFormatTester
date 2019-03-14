@@ -26,12 +26,12 @@ namespace Formatter.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Text {
+        public string Input {
             get {
-                return ((string)(this["Text"]));
+                return ((string)(this["Input"]));
             }
             set {
-                this["Text"] = value;
+                this["Input"] = value;
             }
         }
         
@@ -44,6 +44,42 @@ namespace Formatter.Properties {
             }
             set {
                 this["Culture"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NumberFormat {
+            get {
+                return ((string)(this["NumberFormat"]));
+            }
+            set {
+                this["NumberFormat"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DateFormat {
+            get {
+                return ((string)(this["DateFormat"]));
+            }
+            set {
+                this["DateFormat"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Continous {
+            get {
+                return ((bool)(this["Continous"]));
+            }
+            set {
+                this["Continous"] = value;
             }
         }
     }

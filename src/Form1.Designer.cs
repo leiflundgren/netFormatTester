@@ -39,7 +39,7 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.Result = new System.Windows.Forms.TextBox();
             this.ValueLabel = new System.Windows.Forms.Label();
-            this.txtValue = new System.Windows.Forms.TextBox();
+            this.txtInput = new System.Windows.Forms.TextBox();
             this.ResultLabel = new System.Windows.Forms.Label();
             this.chkContinuous = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
@@ -134,7 +134,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.Result, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.ValueLabel, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.txtValue, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.txtInput, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.ResultLabel, 0, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(17, 102);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -165,15 +165,15 @@
             this.ValueLabel.TabIndex = 10;
             this.ValueLabel.Text = "ValueTextBox";
             // 
-            // txtValue
+            // txtInput
             // 
-            this.txtValue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtValue.Location = new System.Drawing.Point(3, 23);
-            this.txtValue.Multiline = true;
-            this.txtValue.Name = "txtValue";
-            this.txtValue.Size = new System.Drawing.Size(344, 48);
-            this.txtValue.TabIndex = 11;
-            this.txtValue.TextChanged += new System.EventHandler(this.txtValue_TextChanged);
+            this.txtInput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtInput.Location = new System.Drawing.Point(3, 23);
+            this.txtInput.Multiline = true;
+            this.txtInput.Name = "txtInput";
+            this.txtInput.Size = new System.Drawing.Size(344, 48);
+            this.txtInput.TabIndex = 11;
+            this.txtInput.TextChanged += new System.EventHandler(this.txtValue_TextChanged);
             // 
             // ResultLabel
             // 
@@ -187,8 +187,6 @@
             // chkContinuous
             // 
             this.chkContinuous.AutoSize = true;
-            this.chkContinuous.Checked = true;
-            this.chkContinuous.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkContinuous.Location = new System.Drawing.Point(281, 66);
             this.chkContinuous.Name = "chkContinuous";
             this.chkContinuous.Size = new System.Drawing.Size(79, 17);
@@ -213,6 +211,7 @@
             this.Controls.Add(this.NumberBox);
             this.Name = "Form1";
             this.Text = "Format test util";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
@@ -234,7 +233,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         internal System.Windows.Forms.TextBox Result;
         internal System.Windows.Forms.Label ValueLabel;
-        internal System.Windows.Forms.TextBox txtValue;
+        internal System.Windows.Forms.TextBox txtInput;
         internal System.Windows.Forms.Label ResultLabel;
         private System.Windows.Forms.CheckBox chkContinuous;
     }

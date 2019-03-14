@@ -10,111 +10,155 @@ using System.Windows.Forms;
 
 namespace Formatter
 {
-   public partial class Form1 : Form
-   {
-      private ResourceManager rm;
+    public partial class Form1 : Form
+    {
+        private ResourceManager rm;
 
-      private ToolStripStatusLabel label;
+        private ToolStripStatusLabel label;
 
-      private string decimalSeparator;
-      private string amDesignator, pmDesignator, aDesignator, pDesignator;
-      private string pattern;
+        private string decimalSeparator;
+        private string amDesignator, pmDesignator, aDesignator, pDesignator;
+        private string pattern;
 
-      // Flags to indicate presence of error information in status bar
-      bool valueInfo;
-      bool formatInfo;
+        // Flags to indicate presence of error information in status bar
+        bool valueInfo;
+        bool formatInfo;
 
-      private string[] numberFormats = {"C", "D", "E", "e", "F", "G", "N", "P", "R", "X", "x"};
-      private const int DEFAULTSELECTION = 5;
-      private string[] dateFormats = { "g", "d", "D", "f", "F", "g", "G", "M", "O", "R", "s", 
+        private string[] numberFormats = { "C", "D", "E", "e", "F", "G", "N", "P", "R", "X", "x" };
+        private const int DEFAULTSELECTION = 5;
+        private string[] dateFormats = { "g", "d", "D", "f", "F", "g", "G", "M", "O", "R", "s",
                                        "t", "T", "u", "U", "Y" };
+        private bool loaded;
 
-      public Form1()
-      {
-         InitializeComponent();
-         rm = new ResourceManager("Formatter.Resources", this.GetType().Assembly);
-      }
+        public Form1()
+        {
+            InitializeComponent();
+            rm = new ResourceManager("Formatter.Resources", this.GetType().Assembly);
+        }
 
-      private void Form1_Load(object sender, EventArgs e)
-      {
-         // Disable Value text box.
-         OKButton.Enabled = false;
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Disable Value text box.
+            OKButton.Enabled = false;
 
-         // Add label to status bar.
-         label = new ToolStripStatusLabel();
-         ToolStripItem[] items = { label };
-         this.StatusBar.Items.AddRange( items);
+            string select_culture = !string.IsNullOrEmpty(Properties.Settings.Default.Culture) ? Properties.Settings.Default.Culture : CultureInfo.CurrentCulture.Name;
 
-         // Get localized strings for user interface.
-         this.Text = rm.GetString("WindowCaption");
-         this.ValueLabel.Text = rm.GetString("ValueLabel");
-         this.FormatLabel.Text = rm.GetString("FormatLabel");
-         this.ResultLabel.Text = rm.GetString("ResultLabel");
-         this.CulturesLabel.Text = rm.GetString("CultureLabel");
-         this.NumberBox.Text = rm.GetString("NumberBoxText");
-         this.DateBox.Text = rm.GetString("DateBoxText");
-         this.OKButton.Text = rm.GetString("OKButtonText");
+             // Add label to status bar.
+             label = new ToolStripStatusLabel();
+            ToolStripItem[] items = { label };
+            this.StatusBar.Items.AddRange(items);
 
-         // Populate CultureNames list box with culture names
-      CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-      // Define a string array so that we can sort and modify the names.
-      List<String> names = new List<String>();
-      int currentIndex = 0;                    // Index of the current culture.
+            // Get localized strings for user interface.
+            this.Text = rm.GetString("WindowCaption");
+            this.ValueLabel.Text = rm.GetString("ValueLabel");
+            this.FormatLabel.Text = rm.GetString("FormatLabel");
+            this.ResultLabel.Text = rm.GetString("ResultLabel");
+            this.CulturesLabel.Text = rm.GetString("CultureLabel");
+            this.NumberBox.Text = rm.GetString("NumberBoxText");
+            this.DateBox.Text = rm.GetString("DateBoxText");
+            this.OKButton.Text = rm.GetString("OKButtonText");
 
-      foreach (var culture in cultures)
-         names.Add(culture.Name);
+            // Populate CultureNames list box with culture names
+            CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+            // Define a string array so that we can sort and modify the names.
+            List<String> names = new List<String>();
+            int currentIndex = 0;                    // Index of the current culture.
 
-      names.Sort();
-      // Change the name of the invariant culture so it is human readable.
-      names[0] = rm.GetString("InvariantCultureName");
-      // Add the culture names to the list box.
-      this.CultureNames.Items.AddRange(names.ToArray());
+            foreach ( var culture in cultures )
+                names.Add(culture.Name);
 
-      // Make the current culture the selected culture.
-      for (int ctr = 0; ctr < names.Count; ctr++) {
-         if (names[ctr] == CultureInfo.CurrentCulture.Name) {
-            currentIndex = ctr;
-            break;
-         }
-      }
-      this.CultureNames.SelectedIndex = currentIndex;
+            names.Sort();
+            // Change the name of the invariant culture so it is human readable.
+            names[0] = rm.GetString("InvariantCultureName");
+            // Add the culture names to the list box.
+            this.CultureNames.Items.AddRange(names.ToArray());
 
-         // Get decimal separator.
-         decimalSeparator = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
+            // Make the current culture the selected culture.
+            for ( int ctr = 0; ctr < names.Count; ctr++ )
+            {
+                if ( names[ctr] == select_culture )
+                {
+                    currentIndex = ctr;
+                    break;
+                }
+            }
+            this.CultureNames.SelectedIndex = currentIndex;
 
-         // Get am, pm designators.
-         amDesignator = DateTimeFormatInfo.CurrentInfo.AMDesignator;
-         if (amDesignator.Length >= 1)
-            aDesignator = amDesignator.Substring(0, 1);
-         else
-            aDesignator = String.Empty;
+            // Get decimal separator.
+            decimalSeparator = NumberFormatInfo.CurrentInfo.NumberDecimalSeparator;
 
-         pmDesignator = DateTimeFormatInfo.CurrentInfo.PMDesignator;
-         if (pmDesignator.Length >= 1)
-            pDesignator = pmDesignator.Substring(0, 1);
-         else
-            pDesignator = String.Empty;
+            // Get am, pm designators.
+            amDesignator = DateTimeFormatInfo.CurrentInfo.AMDesignator;
+            if ( amDesignator.Length >= 1 )
+                aDesignator = amDesignator.Substring(0, 1);
+            else
+                aDesignator = String.Empty;
 
-         // For regex pattern for date and time components.
-         pattern = @"^\s*\S+\s+\S+\s+\S+(\s+\S+)?(?<!" + amDesignator + "|" + 
-                   aDesignator + "|" + pmDesignator + "|" + pDesignator + @")\s*$";
+            pmDesignator = DateTimeFormatInfo.CurrentInfo.PMDesignator;
+            if ( pmDesignator.Length >= 1 )
+                pDesignator = pmDesignator.Substring(0, 1);
+            else
+                pDesignator = String.Empty;
 
-         // Select NumberBox for numeric string and populate combo box.
-         this.NumberBox.Checked = true;
-      }
+            // For regex pattern for date and time components.
+            pattern = @"^\s*\S+\s+\S+\s+\S+(\s+\S+)?(?<!" + amDesignator + "|" +
+                      aDesignator + "|" + pmDesignator + "|" + pDesignator + @")\s*$";
 
-      private void NumberBox_CheckedChanged(object sender, EventArgs e)
-      {
-         if (this.NumberBox.Checked) {
-            this.Result.Text = String.Empty;
+            // Select NumberBox for numeric string and populate combo box.
+            this.NumberBox.Checked = true;
 
-            this.FormatStrings.Items.Clear();
-            this.FormatStrings.Items.AddRange(numberFormats);
-            this.FormatStrings.SelectedIndex = DEFAULTSELECTION;
-         }
-      }
+            txtInput.Text = Properties.Settings.Default.Input;
+            chkContinuous.Checked = Properties.Settings.Default.Continous;
+            loaded = true;
+        }
 
-      private void OKButton_Click(object sender, EventArgs e)
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.Input = txtInput.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void NumberBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if ( this.NumberBox.Checked )
+            {
+                if ( !string.IsNullOrEmpty(FormatStrings.SelectedText) )
+                    Properties.Settings.Default.DateFormat = FormatStrings.SelectedText;
+
+                this.Result.Text = String.Empty;
+
+                this.FormatStrings.Items.Clear();
+                this.FormatStrings.Items.AddRange(numberFormats);
+                this.FormatStrings.SelectedIndex = DEFAULTSELECTION;
+                try
+                {
+                    FormatStrings.SelectedItem = Properties.Settings.Default.NumberFormat;
+                }
+                catch { }
+            }
+        }
+        private void DateBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if ( this.DateBox.Checked )
+            {
+                if ( !string.IsNullOrEmpty(FormatStrings.SelectedText) )
+                    Properties.Settings.Default.NumberFormat = FormatStrings.SelectedText;
+
+                this.Result.Text = String.Empty;
+
+                this.FormatStrings.Items.Clear();
+                this.FormatStrings.Items.AddRange(dateFormats);
+                this.FormatStrings.SelectedIndex = DEFAULTSELECTION;
+                try
+                {
+                    FormatStrings.SelectedItem = Properties.Settings.Default.DateFormat;
+                }
+                catch { }
+            }
+        }
+
+        private void OKButton_Click(object sender, EventArgs e)
         {
             Execute();
         }
@@ -132,21 +176,23 @@ namespace Formatter
                 cultureName = String.Empty;
             culture = CultureInfo.CreateSpecificCulture(cultureName);
 
-            foreach ( string txt in txtValue.Text.Replace("\r\n", "\n").Split('\n') )
+            foreach ( string txt in txtInput.Text.Replace("\r\n", "\n").Split('\n') )
             {
                 try
                 {
                     this.Result.Text += Format(txt, culture) + "\r\n";
+
                 }
-                catch ( FormatException ex )
+                catch ( Exception ex )
                 {
+                    this.Result.Text += txt + " --> " + ex.Message + "\r\n";
+
                     label.Text = ex.Message;
-                    formatInfo = true;
-                }
-                catch ( ArgumentException ex )
-                {
-                    label.Text = ex.Message;
-                    valueInfo = true;
+                    if ( ex is FormatException )
+                        formatInfo = true;
+                    else if ( ex is ArgumentException )
+                        valueInfo = true;
+
                 }
             }
         }
@@ -173,8 +219,8 @@ namespace Formatter
                     {
                         if ( !DateTimeOffset.TryParse(txt, out dto) )
                             throw new ArgumentException(rm.GetString("MSG_InvalidDTO"));
-                            hasOffset = true;
-                        
+                        hasOffset = true;
+
                     }
                     else
                     {
@@ -257,49 +303,41 @@ namespace Formatter
             }
         }
 
-        private void DateBox_CheckedChanged(object sender, EventArgs e)
-      {
-         if (this.DateBox.Checked) {
+    
+        private void txtValue_TextChanged(object sender, EventArgs e)
+        {
             this.Result.Text = String.Empty;
 
-            this.FormatStrings.Items.Clear();
-            this.FormatStrings.Items.AddRange(dateFormats);
-            this.FormatStrings.SelectedIndex = DEFAULTSELECTION;
-         }
-      }
-
-      private void txtValue_TextChanged(object sender, EventArgs e)
-      {
-         this.Result.Text = String.Empty;
-
-         if (valueInfo) { 
-            label.Text = String.Empty;
-            valueInfo = false;
-         }
-            if ( String.IsNullOrEmpty(txtValue.Text) )
+            if ( valueInfo )
+            {
+                label.Text = String.Empty;
+                valueInfo = false;
+            }
+            if ( String.IsNullOrEmpty(txtInput.Text) )
             {
                 OKButton.Enabled = false;
             }
             else
             {
                 OKButton.Enabled = true;
-                if ( chkContinuous.Checked )
+                if ( loaded && chkContinuous.Checked )
                     Execute();
             }
-      }
+        }
 
-      private void FormatStrings_SelectedIndexChanged(object sender, EventArgs e)
-      {
-         this.Result.Text = String.Empty;
-         if (formatInfo) {
-            label.Text = String.Empty;
-            formatInfo = false;
-         }
-      }
+        private void FormatStrings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.Result.Text = String.Empty;
+            if ( formatInfo )
+            {
+                label.Text = String.Empty;
+                formatInfo = false;
+            }
+        }
 
-      private void CultureNames_SelectedIndexChanged(object sender, EventArgs e)
-      {
-         this.Result.Text = String.Empty;
-      }
-   }
+        private void CultureNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.Result.Text = String.Empty;
+        }
+    }
 }
